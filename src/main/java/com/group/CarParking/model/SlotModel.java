@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +24,8 @@ import com.google.firebase.cloud.FirestoreClient;
 
 /**
  * Parking slot model
+ * 
+ * @author Akshat-Oke
  */
 public class SlotModel {
   public SlotModel(String location, int maxVehicles, Timestamp startTime, Timestamp endTime, double ratings,
@@ -33,6 +36,14 @@ public class SlotModel {
     this.endTime = endTime;
     this.ratings = ratings;
     this.workers = workers;
+  }
+
+  public double getTotalRatings() {
+    return totalRatings;
+  }
+
+  public void setTotalRatings(double totalRatings) {
+    this.totalRatings = totalRatings;
   }
 
   public UserModel getOwnerUserModel() {
@@ -65,6 +76,8 @@ public class SlotModel {
   private Timestamp startTime;
   private Timestamp endTime;
   private double ratings;
+  private double totalRatings;
+  private DocumentReference id;
   private List<CarParkService> workers;
   private DocumentReference owner;
   private UserModel ownerUserModel;
@@ -132,6 +145,16 @@ public class SlotModel {
     } else {
       System.out.println("Not found object");
     }
+  }
+
+  public HashMap<String, Object> toJSON() {
+    var json = new HashMap<String, Object>();
+    json.put("location", this.location);
+    json.put("startTime", this.startTime);
+    json.put("ratings", this.ratings);
+    json.put("totalRatings", this.totalRatings);
+    json.put("owner", this.owner);
+    return json;
   }
 
   @Override
