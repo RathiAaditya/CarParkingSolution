@@ -2,6 +2,7 @@ package com.group.CarParking.service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
@@ -16,8 +17,24 @@ import java.util.concurrent.ExecutionException;
 public class UserService {
     private static Firestore db = FirestoreClient.getFirestore();
 
-    public static UserModel getUserDetails(String id) {
-        // Get user from database and return
+    /**
+     * Get individual user details.
+     * 
+     * @param id User ID
+     * @return {@code UserModel} object or null if it does not exist
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public static UserModel getUserDetails(String id) throws InterruptedException, ExecutionException {
+        DocumentReference docRef = db.collection("users").document(id);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        // block on response
+        DocumentSnapshot document = future.get();
+        UserModel userModel = null;
+        if (document.exists()) {
+            userModel = document.toObject(UserModel.class);
+        }
+        return userModel;
     }
 
     /**
@@ -28,7 +45,6 @@ public class UserService {
      * @return ID of new user document as a JSON string
      */
     public static String createUser(UserModel userModel) {
-
         ApiFuture<DocumentReference> collectionsApiFuture = db.collection("users").add(userModel);
         try {
             String id = collectionsApiFuture.get().getId();

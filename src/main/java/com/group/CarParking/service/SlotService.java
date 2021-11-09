@@ -1,5 +1,6 @@
 package com.group.CarParking.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -8,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import com.group.CarParking.model.SlotModel;
@@ -40,7 +42,18 @@ public class SlotService {
     }
     return slotModel;
   }
-  // public static List<Object> getSlots(Map<String, Object> options) {
 
-  // }
+  public static ArrayList<SlotModel> getSlots() throws InterruptedException, ExecutionException {
+    ApiFuture<QuerySnapshot> future = db.collection("cities").get();
+    List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+    var arrList = new ArrayList<SlotModel>();
+    for (QueryDocumentSnapshot document : documents) {
+      arrList.add(document.toObject(SlotModel.class));
+    }
+    return arrList;
+  }
+
+  public static String createSlot(SlotModel slotModel) {
+
+  }
 }
