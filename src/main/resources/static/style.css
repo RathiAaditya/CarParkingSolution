@@ -1,0 +1,147 @@
+*{
+    margin:5px;
+    padding:5px;
+}
+.navbar{
+    display: flex;
+}
+h1{
+    font-size:50px;
+    text-align:center;
+    color:red;
+}
+h2{
+    font-size:40px;
+    text-align:center;
+    color:rgb(129, 74, 74);
+}
+.navlist{
+  display:flex;
+  width :75%;
+  background-color:rgb(189, 82, 82);
+  
+}
+
+.rightnavbar{
+ 
+    float:right;
+ background-color:rgb(189, 82, 82);
+ width:50%;
+ text-align:right;
+ border:white;
+ 
+}
+.navlist li{
+   display :flex;
+
+   list-style:none;
+   margin-block: 2px;
+   padding: 8px;
+   border:5px solid rgb(red, green, blue);
+}
+.navlist li a{
+    color:#444;
+    font-size:20px;
+   
+}
+.navlist li a:hover{
+    color:black;
+    text-decoration-thickness: 5px;
+    font-size:21px;
+}
+body{
+  
+    background-color:rgb(54, 52, 52);
+    opacity:1;
+    height:5000px;
+   
+}
+
+.img{
+ 
+}
+p {
+    font-family: verdana;
+    font-size: 20px;
+    color:yellow;
+  }
+
+   #hello {
+   
+    padding: 6px;
+    border: 1px yellow;
+    margin-top: 4px;
+    margin-right: 16px;
+    font-size: 17px;
+  }
+  #home{
+      margin:15px;
+  }
+
+  .btn{
+      font-size:17px;
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
+  }
+  .btn:hover {
+    background-color:blueviolet;
+    color: white;
+    font-size:19px;
+  }
+  .btn:visited{
+    background-color:blue;
+  }
+  .container{
+    display:flex;
+   
+    background-repeat: repeat-y;
+    background-size: 400px 400px;
+    background-image:url(car.jpg);
+    height:650px;
+    image-rendering:center;
+  }
+  .flexcontainer{
+      display:flex;
+      flex-wrap:wrap;
+  }
+  .wrapper{
+      width:100%;
+    margin :auto;
+    flex-wrap:wrap;
+  }
+
+  .boxone{
+     height:450px;
+    
+     background:grey;
+     flex-grow:1;
+     flex-shrink: 1;
+  }
+  .boxtwo{
+    height:450px;
+  
+    background:grey;
+    flex-grow:1;
+    flex-shrink: 1;
+  }
+  .boxthree{
+    height:450px;
+
+    background:grey;
+    flex-grow:1;
+    flex-shrink: 1;
+  }
+
+  #Home:hover{
+      font-size:30px;
+     
+  }
+  
+.animation{
+  background-image: url(hello.jpg);
+  background-image:1500px 300px;
+  text-align:center;
+  transform: translateX(200px);
+}
+  
