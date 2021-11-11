@@ -1,14 +1,48 @@
 package com.group.CarParking.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import com.google.cloud.firestore.DocumentReference;
+import com.group.CarParking.service.UserService;
 
 public class UserModel {
     public String getEmail() {
         return email;
+    }
+
+    public double getCredits() {
+        return credits;
+    }
+
+    public void setCredits(double credits) {
+        this.credits = credits;
+    }
+
+    public List<Booking> getWaitingList() {
+        return waitingList;
+    }
+
+    public void setWaitingList(List<Booking> waitingList) {
+        this.waitingList = waitingList;
+    }
+
+    public List<Booking> getCurrentBookingReferences() {
+        return currentBookingReferences;
+    }
+
+    public void setCurrentBookingReferences(List<Booking> currentBookingReferences) {
+        this.currentBookingReferences = currentBookingReferences;
+    }
+
+    public void addToBookings(Booking booking) {
+        ArrayList<Booking> list = new ArrayList<Booking>();
+        list.addAll(this.currentBookingReferences);
+        list.add(booking);
+        this.currentBookingReferences = list;
     }
 
     public List<DocumentReference> getSlots() {
@@ -47,7 +81,18 @@ public class UserModel {
         this.password = password;
     }
 
-    private String email, name, uid, password;
+    public void setAddress(String a) {
+        this.address = a;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    private String email, name, uid, password, address, phoneNumber;
+    private double credits;
+    private List<Booking> currentBookingReferences;
+    private List<Booking> waitingList;
     private List<DocumentReference> slots;
 
     public UserModel() {
@@ -70,6 +115,22 @@ public class UserModel {
         map.put("name", name);
         map.put("email", this.email);
         map.put("password", this.password);
+        map.put("bookings", this.currentBookingReferences.stream().map(booking -> booking.toMap()).toList());
+        map.put("waitingList", this.waitingList.stream().map(booking -> booking.toMap()).toList());
+        map.put("address", this.address);
+        map.put("phoneNumber", this.phoneNumber);
         return map;
+    }
+
+    public boolean update(String id) throws InterruptedException, ExecutionException {
+        return UserService.updateUser(id, this);
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
