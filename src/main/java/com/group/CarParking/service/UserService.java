@@ -6,8 +6,12 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
+import com.group.CarParking.model.Booking;
+import com.group.CarParking.model.SlotModel;
 import com.group.CarParking.model.UserModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -35,6 +39,26 @@ public class UserService {
             userModel = document.toObject(UserModel.class);
         }
         return userModel;
+    }
+
+    public static List<SlotModel> getUserBookings(String id) throws InterruptedException, ExecutionException {
+        DocumentReference docRef = db.collection("users").document(id);
+        var future = docRef.get();
+        var document = future.get();
+        ArrayList<SlotModel> slotModels = new ArrayList<>();
+        if (document.exists()) {
+            UserModel userModel = document.toObject(UserModel.class);
+            if (userModel.getCurrentBookingReferences() != null) {
+                var bookings = userModel.getCurrentBookingReferences();
+                for (Booking booking : bookings) {
+                    future = booking.getSlot().get();
+                    document = future.get();
+                    SlotModel s = document.toObject(SlotModel.class);
+                    slotModels.add(s);
+                }
+            }
+        }
+        return slotModels;
     }
 
     /**

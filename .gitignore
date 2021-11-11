@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 src/main/resources/firebase-service-key.json
 src/main/java/**/firebase-service-key.json
+# Docs 
+docs/
 
 ### STS ###
 .apt_generated

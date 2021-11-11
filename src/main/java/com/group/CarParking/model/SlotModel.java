@@ -2,18 +2,16 @@ package com.group.CarParking.model;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -21,6 +19,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
+import com.group.CarParking.service.SlotService;
 
 /**
  * Parking slot model
@@ -28,14 +27,71 @@ import com.google.firebase.cloud.FirestoreClient;
  * @author Akshat-Oke
  */
 public class SlotModel {
-  public SlotModel(String location, int maxVehicles, Timestamp startTime, Timestamp endTime, double ratings,
-      List<CarParkService> workers) {
+  /**
+   * Creates a new document in Firestore with this current SlotModel
+   * 
+   * @return The ID of the document created
+   */
+  public String save() throws InterruptedException, ExecutionException {
+    return SlotService.createSlot(this);
+  }
+
+  public SlotModel() {
+  }
+
+  public List<Worker> getWorkersModelList() {
+    return workersModelList;
+  }
+
+  public void setWorkersModelList(List<Worker> workersModelList) {
+    this.workersModelList = workersModelList;
+  }
+
+  public double getCostPerHour() {
+    return costPerHour;
+  }
+
+  public void setCostPerHour(double costPerHour) {
+    this.costPerHour = costPerHour;
+  }
+
+  public List<DocumentReference> getWaitingList() {
+    return waitingList;
+  }
+
+  public void setWaitingList(List<DocumentReference> waitingList) {
+    this.waitingList = waitingList;
+  }
+
+  public SlotModel(String location, int maxVehicles, double ratings, List<DocumentReference> workers) {
     this.setLocation(location);
     this.maxVehicles = maxVehicles;
-    this.startTime = startTime;
-    this.endTime = endTime;
     this.ratings = ratings;
     this.workers = workers;
+  }
+
+  public Timestamp getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Timestamp endDate) {
+    this.endDate = endDate;
+  }
+
+  public Timestamp getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Timestamp startDate) {
+    this.startDate = startDate;
+  }
+
+  public List<Booking> getBookings() {
+    return bookings;
+  }
+
+  public void setBookings(List<Booking> bookings) {
+    this.bookings = bookings;
   }
 
   public double getTotalRatings() {
@@ -73,24 +129,25 @@ public class SlotModel {
   private String location;
 
   private int maxVehicles;
-  private Timestamp startTime;
-  private Timestamp endTime;
+  private List<Booking> bookings;
+  private Timestamp startDate;
+  private Timestamp endDate;
+  private double costPerHour;
   private double ratings;
   private double totalRatings;
   private DocumentReference id;
-  private List<CarParkService> workers;
+  // private List<CarParkService> workers;
+  private List<DocumentReference> workers, waitingList;
+  private List<Worker> workersModelList;
   private DocumentReference owner;
   private UserModel ownerUserModel;
 
-  public List<CarParkService> getWorkers() {
+  public List<DocumentReference> getWorkers() {
     return this.workers;
   }
 
-  public void setWorkers(List<CarParkService> w) {
+  public void setWorkers(List<DocumentReference> w) {
     this.workers = w;
-  }
-
-  public SlotModel() {
   }
 
   public int getMaxVehicles() {
@@ -99,22 +156,6 @@ public class SlotModel {
 
   public void setMaxVehicles(int maxVehicles) {
     this.maxVehicles = maxVehicles;
-  }
-
-  public Timestamp getStartTime() {
-    return startTime;
-  }
-
-  public void setStartTime(Timestamp startTime) {
-    this.startTime = startTime;
-  }
-
-  public Timestamp getEndTime() {
-    return endTime;
-  }
-
-  public void setEndTime(Timestamp endTime) {
-    this.endTime = endTime;
   }
 
   public double getRatings() {
@@ -132,25 +173,31 @@ public class SlotModel {
     GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
     FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(credentials).build();
     FirebaseApp.initializeApp(options);
-
-    Firestore db = FirestoreClient.getFirestore();
-    DocumentReference docRef = db.collection("parking-slots").document("test");
-    ApiFuture<DocumentSnapshot> future = docRef.get();
-    DocumentSnapshot document = future.get();
-    SlotModel slotModel;
-    if (document.exists()) {
-      slotModel = document.toObject(SlotModel.class);
-      System.out.println(slotModel);
-      System.out.println(slotModel.getOwner());
-    } else {
-      System.out.println("Not found object");
-    }
+    java.util.Date date = new java.util.Date();
+    Timestamp timestamp = Timestamp.now();
+    System.out.println(SlotService.getSlots());
+    // Firestore db = FirestoreClient.getFirestore();
+    // DocumentReference docRef =
+    // db.collection("parking-slots").document("AmNiuoFL23rBKiV1E6Uk");
+    // ApiFuture<DocumentSnapshot> future = docRef.get();
+    // DocumentSnapshot document = future.get();
+    // SlotModel slotModel;
+    // if (document.exists()) {
+    // slotModel = document.toObject(SlotModel.class);
+    // System.out.println(slotModel);
+    // System.out.println(slotModel.getOwner());
+    // } else {
+    // System.out.println("Not found object");
+    // }
   }
 
   public HashMap<String, Object> toJSON() {
     var json = new HashMap<String, Object>();
     json.put("location", this.location);
-    json.put("startTime", this.startTime);
+    json.put("bookings", this.bookings);
+    json.put("startDate", this.startDate);
+    json.put("endDate", this.endDate);
+    json.put("workers", this.workers);
     json.put("ratings", this.ratings);
     json.put("totalRatings", this.totalRatings);
     json.put("owner", this.owner);
@@ -159,10 +206,12 @@ public class SlotModel {
 
   @Override
   public String toString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (CarParkService map : workers) {
-      stringBuilder.append(map.toString());
-    }
+    StringBuilder stringBuilder = new StringBuilder("{loc: " + location);
+    if (bookings != null)
+      for (Booking map : bookings) {
+        stringBuilder.append(map.toString());
+      }
+    stringBuilder.append(" startDate" + startDate + "}");
     return stringBuilder.toString();
   }
 }

@@ -18,6 +18,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CarParkingApplication {
 
 	public static void main(String[] args) throws IOException {
+		// Do not modify this.
+		// Ensure that your/resources folder has the firebase-service-key.json file
 		ClassLoader classLoader = CarParkingApplication.class.getClassLoader();
 		File file = new File(Objects.requireNonNull(classLoader.getResource("firebase-service-key.json")).getFile());
 		InputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
